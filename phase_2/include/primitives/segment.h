@@ -3,9 +3,11 @@
 
 #include "primitives/point.h"
 #include <memory>
+#include <functional>
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
+#include "math/utils.h"
 
 class Segment {
 public:
@@ -24,6 +26,19 @@ public:
     void serialize(Archive & archive) {
         archive(p1, p2); // Serialize the start and end points
     }
+
+    float length() const {
+        return Utils::distance(*p1, *p2);
+    }
+
+    Point directionVector() const {
+        return Utils::normalize(Utils::subtract(*p2, *p1));
+    }
+
+    float distanceToPoint(const Point& point) const;
+
+    Utils::IntersectionResult projectPoint(const Point& point) const; 
 };
+
 
 #endif // SEGMENT_H
