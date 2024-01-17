@@ -36,6 +36,26 @@ void World::generate() {
     buildings = generateBuildings();
 
     trees = generateTrees();
+
+    laneGuides.clear();
+    laneGuides = generateLaneGuides();
+}
+
+std::vector<Segment> World::generateLaneGuides() {
+    
+    std::vector<Envelope> tempEnvelopes;
+
+    for (auto& seg : graph.getSegments()) {
+        tempEnvelopes.push_back(Envelope(seg, roadWidth/2, roadRoundness));
+    }
+    //call union ont he polygons of the envelopes
+    std::vector<Polygon> polygons;
+    for (auto& env : tempEnvelopes) {
+        polygons.push_back(env.polygon);
+    }
+    std::vector<Segment> segments = Polygon::unionPolygons(polygons);
+
+    return segments;
 }
 
 std::vector<Tree> World::generateTrees() {
@@ -48,7 +68,7 @@ std::vector<Tree> World::generateTrees() {
     }
 
     for (const auto& building : buildings) {
-        for (const auto& pointPtr : building.points) {
+        for (const auto& pointPtr : building.base.points) {
             points.push_back(*pointPtr);
         }
     }
@@ -68,7 +88,7 @@ std::vector<Tree> World::generateTrees() {
     std::vector<Polygon> illegalPolys;
 
     for (const auto& building : buildings) {
-        illegalPolys.push_back(building);
+        illegalPolys.push_back(building.base);
     }
     for (const auto& env : envelopes) {
         illegalPolys.push_back(env.polygon);
@@ -122,7 +142,7 @@ std::vector<Tree> World::generateTrees() {
     return trees;
 }
 
-std::vector<Polygon> World::generateBuildings() {
+std::vector<Building> World::generateBuildings() {
     
     std::vector<Envelope> tempEnvelopes;
 
@@ -171,7 +191,7 @@ std::vector<Polygon> World::generateBuildings() {
         bases.push_back(Envelope(seg, buildingWidth).polygon);
     }
 
-    float eps = 0.0001;
+    float eps = 0.001;
     for (auto it1 = bases.begin(); it1 != bases.end(); ++it1) {
         auto it2 = it1;
         ++it2; // Start from the next element
@@ -184,14 +204,24 @@ std::vector<Polygon> World::generateBuildings() {
         }
     }
 
-    return bases;
+    //map all the bases to new building objects
+    std::vector<Building> buildings;
+    for (auto& base : bases) {
+        buildings.push_back(Building(base));
+    }
+
+    return buildings;
 }
 
 
 
-void World::draw(sf::RenderWindow& window, Point& viewPoint) const {
+void World::draw(sf::RenderWindow& window, const Point& viewPoint) const {
     for (auto& envelope : envelopes) {
         envelope.draw(window, sf::Color(187, 187, 187), 7, sf::Color(187, 187, 187));
+    }
+
+    for (auto& marking : markings) {
+        marking->draw(window);
     }
 
     for (auto& seg : graph.getSegments()) {
@@ -201,13 +231,24 @@ void World::draw(sf::RenderWindow& window, Point& viewPoint) const {
     for (auto& segment : roadBorders) {
         segment.draw(window, 4, sf::Color::White);
     }
-    
-    for (auto& tree : trees) {
-        tree.draw(window, viewPoint);
+
+    std::vector<std::reference_wrapper<const DrawableObject>> items;
+    items.reserve(buildings.size() + trees.size());
+    for (const auto& building : buildings) {
+        items.push_back(building);
+    }
+    for (const auto& tree : trees) {
+        items.push_back(tree);
     }
 
-    for (auto& building : buildings) {
-        building.draw(window);
+    // Sort items based on distance to viewPoint
+    std::sort(items.begin(), items.end(), [&viewPoint](const DrawableObject& a, const DrawableObject& b) {
+        return b.distanceToPoint(viewPoint) < a.distanceToPoint(viewPoint);
+    });
+
+    // Draw each item
+    for (const auto& item : items) {
+        item.get().draw(window, viewPoint);
     }
 
 }

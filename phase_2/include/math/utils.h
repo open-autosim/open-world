@@ -9,10 +9,12 @@
 #include <random>
 #include "primitives/point.h"
 
+
 class Utils {
 public:
     static float distance(const Point& p1, const Point& p2);
     static std::shared_ptr<Point> getNearestPoint(const Point& loc, const std::vector<std::shared_ptr<Point>>& points, float threshold = std::numeric_limits<float>::max());
+
     static Point subtract(const Point& p1, const Point& p2);
     static Point add(const Point& p1, const Point& p2);
     static Point scale(const Point& p, float scaler);
@@ -32,7 +34,6 @@ public:
         return dis(gen);
     }
 
-
     struct IntersectionResult {
         Point point;
         float offset;
@@ -42,6 +43,9 @@ public:
 
 
     static float lerp(float a, float b, float t);
+    static Point lerp2D(const Point& A, const Point& B, float t);
+
+    static Point get3DPoint(const Point& point, const Point& viewPoint, float height);
 
     sf::Color static getRandomColor();
 

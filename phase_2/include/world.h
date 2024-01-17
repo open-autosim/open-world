@@ -5,10 +5,12 @@
 #include "primitives/envelope.h"
 #include "primitives/polygon.h"
 #include "items/tree.h"
+#include "items/building.h"
 #include <vector>
 #include <algorithm> 
 #include <limits>
 #include <SFML/Graphics.hpp>
+#include "markings/marking.h"
 
 
 class World {
@@ -24,11 +26,23 @@ public:
         int treeSize = 160
     );
 
-    void draw(sf::RenderWindow& window, Point& viewPoint) const;
+    void draw(sf::RenderWindow& window, const Point& viewPoint) const;
 
     void generate();
-    std::vector<Polygon> generateBuildings();
+    std::vector<Building> generateBuildings();
     std::vector<Tree> generateTrees();
+    std::vector<Segment> generateLaneGuides();
+
+    // get graph
+    Graph& getGraph() { return graph; }
+    int getRoadWidth() const { return roadWidth; }
+    std::vector<Segment> getLaneGuides() const { return laneGuides; }
+
+    //method to add markings
+    void addMarking(std::shared_ptr<Marking> marking) {
+        markings.push_back(marking);
+    }
+
     
 
 private:
@@ -43,8 +57,11 @@ private:
 
     std::vector<Envelope> envelopes;
     std::vector<Segment> roadBorders;
-    std::vector<Polygon> buildings;
+    std::vector<Building> buildings;
     std::vector<Tree> trees;
+    std::vector<Segment> laneGuides;
+
+    std::vector<std::shared_ptr<Marking>> markings;
 
 
 

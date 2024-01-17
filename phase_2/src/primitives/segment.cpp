@@ -22,6 +22,22 @@ float Segment::distanceToPoint(const Point& point) const {
 
 }
 
+std::shared_ptr<Segment> Segment::getNearestSegment(const Point& loc, const std::vector<Segment>& segments, float threshold) {
+    
+    float minDist = std::numeric_limits<float>::max();
+    std::shared_ptr<Segment> nearest = nullptr;
+
+    for (const auto& segment : segments) {
+        float dist = segment.distanceToPoint(loc); // Assuming Segment has a distanceToPoint method
+        if (dist < minDist && dist < threshold) {
+            minDist = dist;
+            nearest = std::make_shared<Segment>(segment); // Create a new shared_ptr for the nearest segment
+        }
+    }
+    return nearest;
+}
+
+
 Utils::IntersectionResult Segment::projectPoint(const Point& point) const {
     
     Point a = Utils::subtract(point, *p1);

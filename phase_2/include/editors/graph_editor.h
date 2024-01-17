@@ -13,14 +13,19 @@ public:
 
     void handleEvent(const sf::Event& event);
     void display();
-    void print();
     void dispose();
+    void enable();
+    void disable();
+
+    bool isMouseEnabled() const { return mouseEnabled; }
 
 private:
 
     Viewport& viewport;
     sf::RenderWindow& window;
     Graph& graph;
+
+    bool mouseEnabled;
 
     std::shared_ptr<Point> selected;
     std::shared_ptr<Point> hovered;
@@ -31,6 +36,7 @@ private:
     void handleMouseDown(const sf::Event& event);
     void select(std::shared_ptr<Point> point);
     void removePoint(std::shared_ptr<Point> point);
+    
 };
 
 #endif // GRAPH_EDITOR_H

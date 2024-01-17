@@ -71,10 +71,10 @@ void Viewport::handleMouseMove(const sf::Event& event) {
 }
 
 void Viewport::handleMouseUp(const sf::Event& event) {
-    
     if (drag.active) { 
+        
         offset = Utils::add(offset, drag.offset);
-        drag = {Point(0, 0), Point(0, 0), Point(0, 0), false};
+        drag = {Point(0, 0), Point(0, 0), Point(0, 0), false};    
     }
 }
 

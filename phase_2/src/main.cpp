@@ -1,14 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "math/graph.h"
 #include <cstdlib>
 #include <ctime>
-#include "utils/button.h"
+// #include "utils/button.h"
 #include "primitives/polygon.h"
-#include "graph_editor.h"
+#include "editors/graph_editor.h"
+#include "editors/stop_editor.h"
+#include "math/graph.h"
 #include "viewport.h"
 #include "world.h"
 #include "primitives/envelope.h"
+#include "editors/marking_editor.h"
+#include "markings/marking.h"
 
 #include "imgui.h"
 // #include "imgui_stdlib.h"
@@ -28,9 +31,17 @@ int main() {
     if (!graph.load("graph_data.bin")) {
         std::cout << "No saved graph found, starting with a new graph." << std::endl;
     }
+
+    //loaf font
+    sf::Font font;
+    if (!font.loadFromFile("/Users/shlomodahan/Desktop/MCIT/open-world/phase_2/assets/Roboto-Regular.ttf")) {
+        std::cout << "Could not load font." << std::endl;
+    }
+
     World world(graph);
     Viewport viewport(window);
     GraphEditor graphEditor(viewport, graph);
+    StopEditor stopEditor(window, world, viewport);
 
     std::string oldGraphHash = graph.hash();
 
@@ -56,6 +67,7 @@ int main() {
                     event.type == sf::Event::MouseMoved) {
                     viewport.handleEvent(event);
                     graphEditor.handleEvent(event);
+                    stopEditor.handleEvent(event);
                 }
             }
 
@@ -81,10 +93,44 @@ int main() {
             graph.load("graph_data.bin");
             //set window center to graph center
         }
+        // Graph Editor Button
+        if (graphEditor.isMouseEnabled()) {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+            if (ImGui::Button("Graph Editor: Enabled")) {
+                graphEditor.disable();
+                stopEditor.enable(); // Enable Stop Editor when Graph Editor is disabled
+            }
+            ImGui::PopStyleColor();
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+            if (ImGui::Button("Graph Editor: Disabled")) {
+                graphEditor.enable();
+                stopEditor.disable(); // Disable Stop Editor when Graph Editor is enabled
+            }
+            ImGui::PopStyleColor();
+        }
+
+        // Stop Editor Button
+        if (stopEditor.isMouseEnabled()) {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+            if (ImGui::Button("Stop Editor: Enabled")) {
+                stopEditor.disable();
+                graphEditor.enable(); // Enable Graph Editor when Stop Editor is disabled
+            }
+            ImGui::PopStyleColor();
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+            if (ImGui::Button("Stop Editor: Disabled")) {
+                stopEditor.enable();
+                graphEditor.disable(); // Disable Graph Editor when Stop Editor is enabled
+            }
+            ImGui::PopStyleColor();
+        }
         ImGui::End();
 
 
         window.clear(sf::Color(42, 170, 85));
+        // window.clear(sf::Color(255, 255, 255));
 
         viewport.reset();
 
@@ -96,6 +142,7 @@ int main() {
         Point viewPoint = Utils::scale(viewport.getOffset(), -1);
         world.draw(window, viewPoint);
         graphEditor.display();       
+        stopEditor.display();
 
         ImGui::SFML::Render(window);
 

@@ -21,6 +21,7 @@ std::shared_ptr<Point> Utils::getNearestPoint(const Point& loc, const std::vecto
     return nearest;
 }
 
+
 Point Utils::subtract(const Point& p1, const Point& p2) {
     return Point(p1.x - p2.x, p1.y - p2.y);
 }
@@ -85,6 +86,16 @@ float Utils::lerp(float a, float b, float t) {
     return a + (b - a) * t;
 }
 
+Point Utils::lerp2D(const Point& A, const Point& B, float t) {
+    return Point(lerp(A.x, B.x, t), lerp(A.y, B.y, t));
+}
+
+Point Utils::get3DPoint(const Point& point, const Point& viewPoint, float height) {
+    Point dir = normalize(subtract(point, viewPoint));
+    float dist = distance(point, viewPoint);
+    float scaler = std::atan(dist / 300) / (M_PI / 2);
+    return add(point, scale(dir, height * scaler));
+}
 
 struct Color {
     float r, g, b;
@@ -100,36 +111,3 @@ sf::Color Utils::getRandomColor() {
     return sf::Color(red, green, blue);
 }
 
-// sf::Color Utils::getRandomColor() {
-//     // Generate a random hue value between 290 and 550
-//     float hue = 290.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 260.0f));
-
-//     // Convert HSL to RGB (assuming Saturation = 100%, Lightness = 60%)
-//     float S = 1.0f; // Saturation
-//     float L = 0.6f; // Lightness
-//     float C = (1.0f - std::fabs(2.0f * L - 1.0f)) * S;
-//     float X = C * (1.0f - std::fabs(std::fmod(hue / 60.0f, 2.0f) - 1.0f));
-//     float m = L - C / 2.0f;
-//     float r, g, b;
-
-//     if (hue >= 0 && hue < 60) {
-//         r = C, g = X, b = 0;
-//     } else if (hue >= 60 && hue < 120) {
-//         r = X, g = C, b = 0;
-//     } else if (hue >= 120 && hue < 180) {
-//         r = 0, g = C, b = X;
-//     } else if (hue >= 180 && hue < 240) {
-//         r = 0, g = X, b = C;
-//     } else if (hue >= 240 && hue < 300) {
-//         r = X, g = 0, b = C;
-//     } else {
-//         r = C, g = 0, b = X;
-//     }
-
-//     // Adjust the result and convert to 8-bit integers
-//     r = (r + m) * 255;
-//     g = (g + m) * 255;
-//     b = (b + m) * 255;
-
-//     return sf::Color(static_cast<sf::Uint8>(r), static_cast<sf::Uint8>(g), static_cast<sf::Uint8>(b));
-// }

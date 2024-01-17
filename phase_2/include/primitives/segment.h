@@ -1,12 +1,12 @@
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
-#include "primitives/point.h"
 #include <memory>
 #include <functional>
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
+#include "primitives/point.h"
 #include "math/utils.h"
 
 class Segment {
@@ -38,6 +38,8 @@ public:
     float distanceToPoint(const Point& point) const;
 
     Utils::IntersectionResult projectPoint(const Point& point) const; 
+
+    static std::shared_ptr<Segment> getNearestSegment(const Point& loc, const std::vector<Segment>& segments, float threshold = std::numeric_limits<float>::max());
 };
 
 
