@@ -38,7 +38,7 @@ void World::generate() {
     trees = generateTrees();
 }
 
-std::vector<Point> World::generateTrees() {
+std::vector<Tree> World::generateTrees() {
 
     std::vector<Point> points;
 
@@ -74,7 +74,7 @@ std::vector<Point> World::generateTrees() {
         illegalPolys.push_back(env.polygon);
     }
 
-    std::vector<Point> trees;
+    std::vector<Tree> trees;
     int tryCount = 0;
     while (tryCount<100) {
         Point p = Point(
@@ -94,7 +94,7 @@ std::vector<Point> World::generateTrees() {
         // check if point is too close to another tree
         if (keep) {
             for (const auto& tree : trees) {
-                if (Utils::distance(tree, p) < treeSize) {
+                if (Utils::distance(tree.center, p) < treeSize) {
                     keep = false;
                     break;
                 }
@@ -114,7 +114,7 @@ std::vector<Point> World::generateTrees() {
         }
 
         if (keep) {
-            trees.push_back(p);
+            trees.push_back(Tree(p, treeSize));
             tryCount = 0;
         }
         tryCount++;
@@ -189,7 +189,7 @@ std::vector<Polygon> World::generateBuildings() {
 
 
 
-void World::draw(sf::RenderWindow& window) const {
+void World::draw(sf::RenderWindow& window, Point& viewPoint) const {
     for (auto& envelope : envelopes) {
         envelope.draw(window, sf::Color(187, 187, 187), 7, sf::Color(187, 187, 187));
     }
@@ -203,7 +203,7 @@ void World::draw(sf::RenderWindow& window) const {
     }
     
     for (auto& tree : trees) {
-        tree.draw(window, treeSize, sf::Color(0,0,0,50));
+        tree.draw(window, viewPoint);
     }
 
     for (auto& building : buildings) {

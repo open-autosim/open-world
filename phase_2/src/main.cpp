@@ -16,7 +16,7 @@
 
 
 int main() {
-    int windowWidth = 2000;
+    int windowWidth = 1200;
     int windowHeight = 1200;
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "World Editor");    
@@ -79,6 +79,7 @@ int main() {
         if (ImGui::Button("Refresh")) {
             graphEditor.dispose();
             graph.load("graph_data.bin");
+            //set window center to graph center
         }
         ImGui::End();
 
@@ -92,7 +93,8 @@ int main() {
             oldGraphHash = graph.hash();
         }
 
-        world.draw(window);
+        Point viewPoint = Utils::scale(viewport.getOffset(), -1);
+        world.draw(window, viewPoint);
         graphEditor.display();       
 
         ImGui::SFML::Render(window);

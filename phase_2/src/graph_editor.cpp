@@ -30,7 +30,9 @@ void GraphEditor::print() {
 
 void GraphEditor::handleMouseMove(const sf::Event& event) {
     // mouse = sf::Mouse::getPosition(window);
-    mouse = viewport.getMouse(event);
+
+    Point p = viewport.getMouse(event, true);
+    mouse = sf::Vector2i(p.x, p.y);
     hovered = Utils::getNearestPoint(Point(mouse.x, mouse.y), graph.getPoints(), 10*viewport.getZoom());
     if (dragging && selected) {
         selected->x = mouse.x;

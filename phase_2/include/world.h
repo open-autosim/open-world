@@ -4,6 +4,7 @@
 #include "math/graph.h"
 #include "primitives/envelope.h"
 #include "primitives/polygon.h"
+#include "items/tree.h"
 #include <vector>
 #include <algorithm> 
 #include <limits>
@@ -23,11 +24,11 @@ public:
         int treeSize = 160
     );
 
-    void draw(sf::RenderWindow& window) const;
+    void draw(sf::RenderWindow& window, Point& viewPoint) const;
 
     void generate();
     std::vector<Polygon> generateBuildings();
-    std::vector<Point> generateTrees();
+    std::vector<Tree> generateTrees();
     
 
 private:
@@ -43,7 +44,7 @@ private:
     std::vector<Envelope> envelopes;
     std::vector<Segment> roadBorders;
     std::vector<Polygon> buildings;
-    std::vector<Point> trees;
+    std::vector<Tree> trees;
 
 
 
