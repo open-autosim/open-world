@@ -23,8 +23,13 @@ public:
         poly.draw(window);
     }
 
+    virtual std::string getType() const = 0;
+
     // get polygon
     Polygon getPolygon() const { return poly; }
+
+    //get center
+    Point getCenter() const { return center; }
 
 protected:
     Point center;

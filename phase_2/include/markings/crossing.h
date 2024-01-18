@@ -9,6 +9,9 @@ public:
             borders = { poly.segments[0], poly.segments[2] } ;
         }
 
+    //get type
+    std::string getType() const override { return "Crossing"; }
+
     void draw(sf::RenderWindow& window) const override {
         
         Point perp = Utils::perpendicular(directionVector);

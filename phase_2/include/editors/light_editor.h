@@ -1,23 +1,23 @@
 // StopEditor.h
-#ifndef STOP_EDITOR_H
-#define STOP_EDITOR_H
+#ifndef LIGHT_EDITOR_H
+#define LIGHT_EDITOR_H
 
 #include "marking_editor.h"
-#include "markings/stop.h"
+#include "markings/light.h"
 
-class StopEditor : public MarkingEditor {
+class LightEditor : public MarkingEditor {
 public:
-    StopEditor(sf::RenderWindow& window, World& world, Viewport& viewport)
+    LightEditor(sf::RenderWindow& window, World& world, Viewport& viewport)
         : MarkingEditor(window, world, viewport, world.getLaneGuides()) {}
 
     
     std::string getName() const override {
-        return "Stop Editor";
+        return "Light Editor";
     }
     
     protected:
     std::shared_ptr<Marking> createIntent(const Point& point, const Point& directionVector) override {
-        return std::make_shared<Stop>(
+        return std::make_shared<Light>(
             point, 
             directionVector, 
             world.getRoadWidth()/2, 
@@ -28,4 +28,4 @@ public:
 
 };
 
-#endif // STOP_EDITOR_H
+#endif // 

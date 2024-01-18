@@ -14,6 +14,9 @@ public:
             border = poly.segments[2];
         }
 
+    //get type
+    std::string getType() const override { return "Stop"; }
+
     void draw(sf::RenderWindow& window) const override {
 
         // std::cout << "Drawing stop" << std::endl;

@@ -213,9 +213,65 @@ std::vector<Building> World::generateBuildings() {
     return buildings;
 }
 
+std::vector<std::shared_ptr<Point>> World::getIntersections() const {
+    std::vector<std::shared_ptr<Point>> subset;
+    for (const auto& p : graph.getPoints()) {
+        float deg = 0;
+        for (const auto& seg : graph.getSegments()) {
+            if (seg.includes(*p)) {
+                deg++;
+            }
+        }
+        if (deg > 2) {
+            subset.push_back(p); // Since p is already a shared_ptr
+        }
+    }
+    return subset;
+}
+
+
+void World::updateLights() const {
+
+    std::vector<std::shared_ptr<Light>> lights;
+    for (auto& marking : markings) {
+        if (auto lightPtr = std::dynamic_pointer_cast<Light>(marking)) {
+            lights.push_back(lightPtr);
+        }
+    }
+
+    std::map<std::shared_ptr<Point>, std::vector<std::shared_ptr<Light>>> controlCenters;
+    for (const auto& light : lights) {
+        std::shared_ptr<Point> point = Utils::getNearestPoint(light->getCenter(), getIntersections());
+        controlCenters[point].push_back(light);
+    }
+
+    int greenDuration = 2, yellowDuration = 1;
+    for (auto& [point, centerLights] : controlCenters) {
+        int ticks = centerLights.size() * (greenDuration + yellowDuration);
+        int tick = frameCount / 60;
+        int cTick = tick % ticks;
+        int greenYellowIndex = cTick / (greenDuration + yellowDuration);
+        bool isGreen = cTick % (greenDuration + yellowDuration) < greenDuration;
+
+        for (size_t i = 0; i < centerLights.size(); ++i) {
+            if (i == greenYellowIndex) {
+                centerLights[i]->setState(isGreen ? Light::State::Green : Light::State::Yellow);
+            } else {
+                centerLights[i]->setState(Light::State::Red);
+            }
+        }
+    }
+
+    frameCount++;
+}
+
+
 
 
 void World::draw(sf::RenderWindow& window, const Point& viewPoint) const {
+
+    updateLights();
+
     for (auto& envelope : envelopes) {
         envelope.draw(window, sf::Color(187, 187, 187), 7, sf::Color(187, 187, 187));
     }

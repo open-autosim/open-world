@@ -12,11 +12,14 @@
 #include "primitives/envelope.h"
 #include "editors/marking_editor.h"
 #include "editors/crossing_editor.h"
+#include "editors/start_editor.h"
+#include "editors/light_editor.h"   
 #include "markings/marking.h"
 
 #include "imgui.h"
 // #include "imgui_stdlib.h"
 #include "imgui-sfml/imgui-SFML.h"
+
 
 
 int main() {
@@ -36,10 +39,13 @@ int main() {
     World world(graph);
     Viewport viewport(window);
     GraphEditor graphEditor(world, viewport, graph);
+    graphEditor.disable();
 
     std::vector<std::unique_ptr<MarkingEditor>> editors;
     editors.push_back(std::make_unique<StopEditor>(window, world, viewport));
     editors.push_back(std::make_unique<CrossingEditor>(window, world, viewport));
+    editors.push_back(std::make_unique<StartEditor>(window, world, viewport));
+    editors.push_back(std::make_unique<LightEditor>(window, world, viewport));
 
     // StopEditor stopEditor(window, world, viewport);
     // CrossingEditor crossingEditor(window, world, viewport);

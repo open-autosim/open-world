@@ -11,6 +11,7 @@
 #include <limits>
 #include <SFML/Graphics.hpp>
 #include "markings/marking.h"
+#include "markings/light.h"
 
 
 class World {
@@ -32,6 +33,10 @@ public:
     std::vector<Building> generateBuildings();
     std::vector<Tree> generateTrees();
     std::vector<Segment> generateLaneGuides();
+
+    std::vector<std::shared_ptr<Point>> getIntersections() const;
+
+    void updateLights() const;
 
     // get graph
     Graph& getGraph() { return graph; }
@@ -70,7 +75,8 @@ private:
     int buildingWidth;
     int buildingMinLength;
     int spacing;
-    int treeSize;
+    int treeSize;   
+    mutable int frameCount = 0;
 
     std::vector<Envelope> envelopes;
     std::vector<Segment> roadBorders;

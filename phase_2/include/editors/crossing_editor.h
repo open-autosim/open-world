@@ -18,7 +18,10 @@ public:
 
     protected:
     std::shared_ptr<Marking> createIntent(const Point& point, const Point& directionVector) override {
-        return std::make_shared<Crossing>(point, directionVector, world.getRoadWidth(), world.getRoadWidth()/2);
+        return std::make_shared<Crossing>(point, 
+        directionVector, 
+        world.getRoadWidth(), 
+        world.getRoadWidth()/2);
     }
 
 };
