@@ -12,6 +12,9 @@
 #include <SFML/Graphics.hpp>
 #include "markings/marking.h"
 #include "markings/light.h"
+#include <cereal/types/vector.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/archives/binary.hpp>
 
 
 class World {
@@ -60,12 +63,27 @@ public:
 
     //method to clear markings
     void clearWorld() {
+        // graph.dispose();
         markings.clear();
         buildings.clear();
         trees.clear();
     }
 
+    // template<class Archive>
+    // void serialize(Archive & archive) {
+    //     archive(graph, roadWidth, roadRoundness, buildingWidth, buildingMinLength, spacing, treeSize, buildings, trees, markings, laneGuides, roadBorders, envelopes);
+    // }
+
+    void save() const;
+    bool load();
+
+    template<class Archive>
+    void serialize(Archive & archive) {
+        archive(graph, roadWidth, roadRoundness, buildingWidth, buildingMinLength, spacing, treeSize, buildings, trees, envelopes, roadBorders, laneGuides, markings, zoom, offset);
+    }
     
+    float zoom;
+    Point offset;
 
 private:
     /* data */
@@ -77,6 +95,7 @@ private:
     int spacing;
     int treeSize;   
     mutable int frameCount = 0;
+
 
     std::vector<Envelope> envelopes;
     std::vector<Segment> roadBorders;

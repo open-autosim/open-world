@@ -18,8 +18,11 @@ public:
     sf::RenderWindow& getWindow() const { return window; }
 
     Point getOffset() const;
-    
 
+    //set zoom
+    void setZoom(float zoom) { this->zoom = zoom; }
+    void setOffset(Point offset) { this->offset = offset; }
+    
 private:
 
     sf::RenderWindow& window;

@@ -10,11 +10,16 @@
 #include <algorithm>
 #include <limits>
 
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "drawable_object.h"
 
 class Building : public DrawableObject {
 
 public:
+
+    Building() {}
 
     Building(const Polygon& polygon, int height = 200);
     void draw(sf::RenderWindow& window, const Point& viewPoint) const override;
@@ -26,7 +31,17 @@ public:
     Polygon base;
     int height;
 
+
+
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(base, height); 
+    }
+
 };
+
+CEREAL_REGISTER_TYPE(Building);
+
 
 
 #endif // BUILDING_H

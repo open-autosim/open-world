@@ -308,3 +308,25 @@ void World::draw(sf::RenderWindow& window, const Point& viewPoint) const {
     }
 
 }
+
+void World::save() const {
+    std::ofstream os("world.bin", std::ios::binary);
+    cereal::BinaryOutputArchive archive(os);
+    archive(*this);
+
+    std::cout << "World saved to world.bin" << std::endl;
+}
+
+bool World::load() {
+
+    // check if file exists
+    std::ifstream f("world.bin");
+    if (!f.good()) {
+        return false;
+    }
+
+    std::ifstream is("world.bin", std::ios::binary);
+    cereal::BinaryInputArchive archive(is);
+    archive(*this);
+    return true;
+}

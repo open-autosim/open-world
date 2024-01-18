@@ -1,8 +1,21 @@
+#ifndef START_H
+#define START_H
+
+
 #include "markings/marking.h"
 #include "math/utils.h"
 
 class Start : public Marking {
 public: 
+
+    Start() {
+
+        if (!texture.loadFromFile("/Users/shlomodahan/Desktop/MCIT/open-world/phase_2/assets/car.png")) {
+            std::cout << "Error loading texture" << std::endl;
+        }
+
+    }
+
     // Using the constructor of Marking
     Start(const Point& center, const Point& directionVector, int width, int height)
         : Marking(center, directionVector, width, height) {
@@ -33,6 +46,12 @@ public:
                 
     }
 
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(cereal::base_class<Marking>(this)); // Serialize base class and Start-specific members
+        // Note: Serialization of sf::Font is not straightforward and might need custom handling
+    }
+
 private:
     
     sf::Texture texture;
@@ -41,4 +60,8 @@ private:
     
 };
 
+CEREAL_REGISTER_TYPE(Start);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(Marking, Start);
+
+#endif // START_H
 

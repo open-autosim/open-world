@@ -9,6 +9,9 @@
 #include "primitives/segment.h"
 #include "math/utils.h"
 
+#include <cereal/archives/binary.hpp>
+
+
 class Polygon {
 
 public:
@@ -31,6 +34,11 @@ public:
     float distanceToPoint(const Point& point) const;
 
     float distanceToPoly(const Polygon& polygon) const;
+
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(points, segments); 
+    }
 
 private:
 

@@ -14,11 +14,18 @@
 class Envelope {
 
 public:    
+
+    Envelope() {}
     Envelope(Segment& segment, int width, int roundness = 1);
     Polygon generatePolygon(int width, int roundness);
     void draw(sf::RenderWindow& window, sf::Color stroke = sf::Color::Blue, int linewidth = 2, sf::Color fill = sf::Color(0, 0, 255, 50)) const;
     
     Polygon polygon;
+
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(polygon, skeleton, width, roundness); 
+    }
 
 private:
     Segment skeleton;  

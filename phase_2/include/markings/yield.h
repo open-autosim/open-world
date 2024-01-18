@@ -1,21 +1,20 @@
-#ifndef STOP_H
-#define STOP_H
+#ifndef YIELD_H
+#define YIELD_H
 
 #include "marking.h"
 
-class Stop : public Marking {
+class Yield : public Marking {
 public: 
 
-    Stop() {
-        
+    
+    Yield() {
         if (!font.loadFromFile("/Users/shlomodahan/Desktop/MCIT/open-world/phase_2/assets/Roboto-Regular.ttf")) {
-            std::cout << "Error loading font" << std::endl;
+        std::cout << "Error loading font" << std::endl;
         }
     }
 
-
     // Using the constructor of Marking
-    Stop(const Point& center, const Point& directionVector, int width, int height)
+    Yield(const Point& center, const Point& directionVector, int width, int height)
         : Marking(center, directionVector, width, height) {
             
             // Load the font
@@ -27,32 +26,30 @@ public:
         }
 
     //get type
-    std::string getType() const override { return "Stop"; }
+    std::string getType() const override { return "Yield"; }
 
     void draw(sf::RenderWindow& window) const override {
 
-        // std::cout << "Drawing stop" << std::endl;
-
-        // Draw the border
-        border.draw(window, 5, sf::Color::White);
+        border.draw(window, 5, sf::Color::Yellow);
 
         // Draw the text
         sf::Text text;
-        text.setString("STOP");
+        text.setString("YIELD");
         text.setFont(font);
         text.setCharacterSize(static_cast<unsigned int>(height * 0.3));
-        text.setFillColor(sf::Color::White);
+        text.setFillColor(sf::Color::Yellow);
         text.setStyle(sf::Text::Bold);
-        // text.setScale(1, 2);
 
-        // Set the origin, rotation, and position of the text
-        text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
-        float rotationAngleRadians = Utils::angle(directionVector) - M_PI/2;
-        float rotationAngleDegrees = rotationAngleRadians * 180.0f / M_PI;
+        //scale the text
+        text.setScale(1, 2);
+
+        sf::FloatRect textBounds = text.getLocalBounds();
+        text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+
+        float rotationAngleDegrees = (Utils::angle(directionVector) - M_PI/2) * 180.0f / M_PI;
         text.setRotation(rotationAngleDegrees);
-        text.setPosition(sf::Vector2f(center.x, center.y));
+        text.setPosition(sf::Vector2f(center.x, center.y + 3));
 
-        // Draw the text
         window.draw(text);
     }
 
@@ -68,8 +65,9 @@ private:
     sf::Font font;
 };
 
-CEREAL_REGISTER_TYPE(Stop);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(Marking, Stop);
+CEREAL_REGISTER_TYPE(Yield);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(Marking, Yield);
+
+#endif // YIELD_H
 
 
-#endif // STOP_H

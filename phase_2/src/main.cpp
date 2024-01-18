@@ -14,6 +14,9 @@
 #include "editors/crossing_editor.h"
 #include "editors/start_editor.h"
 #include "editors/light_editor.h"   
+#include "editors/parking_editor.h" 
+#include "editors/target_editor.h"
+#include "editors/yield_editor.h"
 #include "markings/marking.h"
 
 #include "imgui.h"
@@ -32,12 +35,18 @@ int main() {
 
     //load graph info from file
     Graph graph;
-    if (!graph.load("graph_data.bin")) {
-        std::cout << "No saved graph found, starting with a new graph." << std::endl;
-    }
-
     World world(graph);
     Viewport viewport(window);
+
+    if (!world.load()) {
+        std::cout << "No saved world found, starting with a new world." << std::endl;
+    } else {
+        viewport.setZoom(world.zoom);
+        // viewport.setOffset(world.offset);
+    }
+    
+    // World world(graph);
+    
     GraphEditor graphEditor(world, viewport, graph);
     graphEditor.disable();
 
@@ -46,13 +55,13 @@ int main() {
     editors.push_back(std::make_unique<CrossingEditor>(window, world, viewport));
     editors.push_back(std::make_unique<StartEditor>(window, world, viewport));
     editors.push_back(std::make_unique<LightEditor>(window, world, viewport));
+    editors.push_back(std::make_unique<ParkingEditor>(window, world, viewport));
+    editors.push_back(std::make_unique<TargetEditor>(window, world, viewport));
+    editors.push_back(std::make_unique<YieldEditor>(window, world, viewport));
 
-    // StopEditor stopEditor(window, world, viewport);
-    // CrossingEditor crossingEditor(window, world, viewport);
 
     std::string oldGraphHash = graph.hash();
 
-    world.generate();
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
@@ -92,15 +101,19 @@ int main() {
         // ImGui window
         ImGui::Begin("Control Panel");
         if (ImGui::Button("Save")) {
-            graph.save("graph_data.bin");
+            // graph.save("graph_data.bin");
+            world.zoom = viewport.getZoom();
+            // world.offset = viewport.offset;
+            world.save();
+            
         }
         if (ImGui::Button("Dispose")) {
             graphEditor.dispose();
+            world.clearWorld();
         }
         if (ImGui::Button("Refresh")) {
-            graphEditor.dispose();
-            graph.load("graph_data.bin");
-            //set window center to graph center
+            // world.clearWorld();
+            world.load();
         }
         // Graph Editor Button
         if (graphEditor.isMouseEnabled()) {

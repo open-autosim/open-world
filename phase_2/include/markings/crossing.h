@@ -1,7 +1,14 @@
+#ifndef CROSSING_H
+#define CROSSING_H
+
 #include "markings/marking.h"
+#include <cereal/types/polymorphic.hpp>
 
 class Crossing : public Marking {
 public: 
+
+    Crossing() {}
+
     // Using the constructor of Marking
     Crossing(const Point& center, const Point& directionVector, int width, int height)
         : Marking(center, directionVector, width, height) {
@@ -26,10 +33,20 @@ public:
         
     }
 
+
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(cereal::base_class<Marking>(this), borders); // Serialize base class and Crossing-specific members
+    }
+
 private:
     
     std::vector<Segment> borders;
     
 };
 
+CEREAL_REGISTER_TYPE(Crossing);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(Marking, Crossing);
+
+#endif // CROSSING_H
 

@@ -22,10 +22,6 @@ public:
     bool includes(const Point& point) const;
     void draw(sf::RenderWindow& window, float width = 2, sf::Color color = sf::Color::Black, bool dash = false, float dashLength = 10.0f, float gapLength = 10.0f) const;
 
-    template<class Archive>
-    void serialize(Archive & archive) {
-        archive(p1, p2); // Serialize the start and end points
-    }
 
     float length() const {
         return Utils::distance(*p1, *p2);
@@ -40,6 +36,13 @@ public:
     Utils::IntersectionResult projectPoint(const Point& point) const; 
 
     static std::shared_ptr<Segment> getNearestSegment(const Point& loc, const std::vector<Segment>& segments, float threshold = std::numeric_limits<float>::max());
+
+
+    template<class Archive>
+    void serialize(Archive & archive) {
+        archive(p1, p2); // Serialize the start and end points
+    }
+
 };
 
 

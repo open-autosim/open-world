@@ -8,8 +8,15 @@
 #include "primitives/polygon.h"
 #include "math/utils.h" 
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/memory.hpp>
+
 class Marking {
 public: 
+
+    //default constructor
+    Marking() {}
+
     Marking(const Point& center, const Point& directionVector, int width, int height)
         : center(center), directionVector(directionVector), width(width), height(height) 
     {
@@ -31,6 +38,13 @@ public:
     //get center
     Point getCenter() const { return center; }
 
+    
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(center, directionVector, width, height, support, poly); // Serialize all relevant members
+    }
+
+
 protected:
     Point center;
     Point directionVector;
@@ -39,5 +53,9 @@ protected:
     Segment support;
     Polygon poly;
 };
+
+
+CEREAL_REGISTER_TYPE(Marking);
+
 
 #endif // MARKING_H

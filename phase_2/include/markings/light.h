@@ -7,6 +7,8 @@
 class Light : public Marking {
 public: 
 
+    Light() {}
+
     enum class State {
         Off,
         Green,
@@ -64,6 +66,13 @@ public:
                 
     }
 
+
+    template<class Archive>
+    void serialize(Archive& archive) {
+        archive(cereal::base_class<Marking>(this), state, border); // Serialize base class and Light-specific members
+    }
+
+
 private:
     
     State state;
@@ -71,6 +80,9 @@ private:
         
     
 };
+
+CEREAL_REGISTER_TYPE(Light);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(Marking, Light);
 
 #endif // LIGHT_H
 
