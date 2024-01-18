@@ -10,11 +10,17 @@ public:
     StopEditor(sf::RenderWindow& window, World& world, Viewport& viewport)
         : MarkingEditor(window, world, viewport, world.getLaneGuides()) {}
 
-    // Implement the createIntent function
+    
+    std::string getName() const override {
+        return "Stop Editor";
+    }
+    
     protected:
     std::shared_ptr<Marking> createIntent(const Point& point, const Point& directionVector) override {
         return std::make_shared<Stop>(point, directionVector, world.getRoadWidth()/2, world.getRoadWidth()/2);
     }
+
+
 
 };
 

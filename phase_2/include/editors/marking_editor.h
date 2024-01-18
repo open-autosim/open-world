@@ -13,9 +13,13 @@
 
 class MarkingEditor {
 public:
+
     MarkingEditor(sf::RenderWindow& window, World& world, Viewport& viewport, std::vector<Segment>& targetSegments)
         : window(window), world(world), viewport(viewport), mouseEnabled(false), targetSegments(targetSegments) {}
 
+    virtual ~MarkingEditor() {}
+
+    virtual std::string getName() const = 0;
 
     void handleEvent(const sf::Event& event) {
         if (!mouseEnabled) {
