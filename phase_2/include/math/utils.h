@@ -28,6 +28,8 @@ public:
 
     static float dot(const Point& p1, const Point& p2);
 
+    static Point perpendicular(const Point& p);
+
     static float getRand() {
         static std::mt19937 gen(std::random_device{}());
         std::uniform_real_distribution<float> dis(0.0f, 1.0f);

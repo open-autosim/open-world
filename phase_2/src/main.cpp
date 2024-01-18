@@ -11,6 +11,7 @@
 #include "world.h"
 #include "primitives/envelope.h"
 #include "editors/marking_editor.h"
+#include "editors/crossing_editor.h"
 #include "markings/marking.h"
 
 #include "imgui.h"
@@ -40,8 +41,9 @@ int main() {
 
     World world(graph);
     Viewport viewport(window);
-    GraphEditor graphEditor(viewport, graph);
+    GraphEditor graphEditor(world, viewport, graph);
     StopEditor stopEditor(window, world, viewport);
+    CrossingEditor crossingEditor(window, world, viewport);
 
     std::string oldGraphHash = graph.hash();
 
@@ -68,6 +70,7 @@ int main() {
                     viewport.handleEvent(event);
                     graphEditor.handleEvent(event);
                     stopEditor.handleEvent(event);
+                    crossingEditor.handleEvent(event);
                 }
             }
 
@@ -98,14 +101,14 @@ int main() {
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
             if (ImGui::Button("Graph Editor: Enabled")) {
                 graphEditor.disable();
-                stopEditor.enable(); // Enable Stop Editor when Graph Editor is disabled
             }
             ImGui::PopStyleColor();
         } else {
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
             if (ImGui::Button("Graph Editor: Disabled")) {
                 graphEditor.enable();
-                stopEditor.disable(); // Disable Stop Editor when Graph Editor is enabled
+                stopEditor.disable(); 
+                crossingEditor.disable();
             }
             ImGui::PopStyleColor();
         }
@@ -115,7 +118,6 @@ int main() {
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
             if (ImGui::Button("Stop Editor: Enabled")) {
                 stopEditor.disable();
-                graphEditor.enable(); // Enable Graph Editor when Stop Editor is disabled
             }
             ImGui::PopStyleColor();
         } else {
@@ -123,9 +125,27 @@ int main() {
             if (ImGui::Button("Stop Editor: Disabled")) {
                 stopEditor.enable();
                 graphEditor.disable(); // Disable Graph Editor when Stop Editor is enabled
+                crossingEditor.disable();
             }
             ImGui::PopStyleColor();
         }
+
+        if (crossingEditor.isMouseEnabled()) {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+            if (ImGui::Button("Crossing Editor: Enabled")) {
+                crossingEditor.disable();
+            }
+            ImGui::PopStyleColor();
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+            if (ImGui::Button("Crossing Editor: Disabled")) {
+                crossingEditor.enable();
+                graphEditor.disable();
+                stopEditor.disable();
+            }
+            ImGui::PopStyleColor();
+        }
+
         ImGui::End();
 
 
@@ -143,6 +163,7 @@ int main() {
         world.draw(window, viewPoint);
         graphEditor.display();       
         stopEditor.display();
+        crossingEditor.display();
 
         ImGui::SFML::Render(window);
 

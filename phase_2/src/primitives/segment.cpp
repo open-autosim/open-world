@@ -52,31 +52,26 @@ Utils::IntersectionResult Segment::projectPoint(const Point& point) const {
 
 }
 
-void Segment::draw(sf::RenderWindow& window, float width, sf::Color color, bool dash) const {
-    if (!dash) {
-        // Draw solid line
-        // Draw solid line with width
-        sf::Vector2f delta = sf::Vector2f(p2->x - p1->x, p2->y - p1->y);
-        float length = std::hypot(delta.x, delta.y);
+void Segment::draw(sf::RenderWindow& window, float width, sf::Color color, bool dash, float dashLength, float gapLength) const {
+    sf::Vector2f delta = sf::Vector2f(p2->x - p1->x, p2->y - p1->y);
+    float length = std::hypot(delta.x, delta.y);
 
+    if (!dash) {
+        // Draw solid line with width
         sf::RectangleShape line(sf::Vector2f(length, width));
         line.setPosition(sf::Vector2f(p1->x, p1->y));
         line.setFillColor(color);
         float angle = std::atan2(delta.y, delta.x) * 180.0f / M_PI;
         line.setRotation(angle);
-
         window.draw(line);
-        
     } else {
         // Draw dashed line
-        const float dashLength = 10.0f;
-        const float gapLength = 10.0f;
+        const float dashLength = 11.0f; // Dash length
+        const float gapLength = 11.0f;  // Gap length
 
-        sf::Vector2f delta = sf::Vector2f(p2->x, p2->y) - sf::Vector2f(p1->x, p1->y);
-        float length = std::hypot(delta.x, delta.y);
         sf::Vector2f unitDelta = delta / length;
-
         float currentLength = 0.0f;
+
         while (currentLength < length) {
             sf::Vector2f startPos = sf::Vector2f(p1->x, p1->y) + unitDelta * currentLength;
             currentLength += dashLength;
@@ -84,11 +79,11 @@ void Segment::draw(sf::RenderWindow& window, float width, sf::Color color, bool 
             sf::Vector2f endPos = sf::Vector2f(p1->x, p1->y) + unitDelta * currentLength;
             currentLength += gapLength;
 
-            sf::VertexArray dash(sf::Lines, 2);
-            dash[0].position = startPos;
-            dash[1].position = endPos;
-            dash[0].color = color;
-            dash[1].color = color;
+            sf::RectangleShape dash(sf::Vector2f(std::hypot(endPos.x - startPos.x, endPos.y - startPos.y), width));
+            dash.setPosition(startPos);
+            dash.setFillColor(color);
+            float dashAngle = std::atan2(endPos.y - startPos.y, endPos.x - startPos.x) * 180.0f / M_PI;
+            dash.setRotation(dashAngle);
 
             window.draw(dash);
         }

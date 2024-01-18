@@ -4,8 +4,8 @@
 
 
 
-GraphEditor::GraphEditor(Viewport& viewport, Graph& graph)
-    : mouseEnabled(true), viewport(viewport), graph(graph), selected(nullptr), hovered(nullptr), dragging(false), window(viewport.getWindow()) {}
+GraphEditor::GraphEditor(World& world, Viewport& viewport, Graph& graph)
+    : world(world), mouseEnabled(true), viewport(viewport), graph(graph), selected(nullptr), hovered(nullptr), dragging(false), window(viewport.getWindow()) {}
 
 
 void GraphEditor::enable() {
@@ -88,6 +88,8 @@ void GraphEditor::removePoint(std::shared_ptr<Point> point) {
 
 void GraphEditor::display() {
 
+    if (!mouseEnabled) return;
+
     graph.draw(window);
 
     if (hovered) {
@@ -108,4 +110,6 @@ void GraphEditor::dispose() {
     //clear selected and hovered
     selected = nullptr;
     hovered = nullptr;
+
+    world.clearWorld();
 }

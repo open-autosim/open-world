@@ -61,6 +61,10 @@ float Utils::dot(const Point& p1, const Point& p2) {
     return p1.x * p2.x + p1.y * p2.y;
 }
 
+Point Utils::perpendicular(const Point& p) {
+    return Point(-p.y, p.x);
+}
+
 std::optional<Utils::IntersectionResult> Utils::getIntersection(const Point& A, const Point& B, const Point& C, const Point& D) {
     float tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
     float uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);

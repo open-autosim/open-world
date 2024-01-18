@@ -23,6 +23,9 @@ public:
         poly.draw(window);
     }
 
+    // get polygon
+    Polygon getPolygon() const { return poly; }
+
 protected:
     Point center;
     Point directionVector;

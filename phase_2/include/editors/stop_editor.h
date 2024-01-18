@@ -8,7 +8,7 @@
 class StopEditor : public MarkingEditor {
 public:
     StopEditor(sf::RenderWindow& window, World& world, Viewport& viewport)
-        : MarkingEditor(window, world, viewport) {}
+        : MarkingEditor(window, world, viewport, world.getLaneGuides()) {}
 
     // Implement the createIntent function
     protected:

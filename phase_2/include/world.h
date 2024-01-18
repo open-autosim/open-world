@@ -36,11 +36,28 @@ public:
     // get graph
     Graph& getGraph() { return graph; }
     int getRoadWidth() const { return roadWidth; }
-    std::vector<Segment> getLaneGuides() const { return laneGuides; }
 
     //method to add markings
     void addMarking(std::shared_ptr<Marking> marking) {
         markings.push_back(marking);
+    }
+
+    //method to get markings
+    std::vector<std::shared_ptr<Marking>>& getMarkings() {
+        return markings;
+    }
+
+    // In world.h
+    std::vector<Segment>& getLaneGuides() { return laneGuides; }
+
+    std::vector<Segment>& getRoadBorders() { return roadBorders; }
+    
+
+    //method to clear markings
+    void clearWorld() {
+        markings.clear();
+        buildings.clear();
+        trees.clear();
     }
 
     

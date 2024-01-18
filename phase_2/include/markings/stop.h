@@ -15,6 +15,9 @@ public:
         }
 
     void draw(sf::RenderWindow& window) const override {
+
+        // std::cout << "Drawing stop" << std::endl;
+
         // Draw the border
         border.draw(window, 5, sf::Color::White);
 

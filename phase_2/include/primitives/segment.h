@@ -20,7 +20,7 @@ public:
 
     bool equals(const Segment& seg) const;
     bool includes(const Point& point) const;
-    void draw(sf::RenderWindow& window, float width = 2, sf::Color color = sf::Color::Black, bool dash = false) const;
+    void draw(sf::RenderWindow& window, float width = 2, sf::Color color = sf::Color::Black, bool dash = false, float dashLength = 10.0f, float gapLength = 10.0f) const;
 
     template<class Archive>
     void serialize(Archive & archive) {

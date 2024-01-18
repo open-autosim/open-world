@@ -6,10 +6,11 @@
 #include "math/graph.h"
 #include "math/utils.h"
 #include "viewport.h"
+#include "world.h"
 
 class GraphEditor {
 public:
-    GraphEditor(Viewport& viewport, Graph& graph);
+    GraphEditor(World& world, Viewport& viewport, Graph& graph);
 
     void handleEvent(const sf::Event& event);
     void display();
@@ -21,6 +22,7 @@ public:
 
 private:
 
+    World& world;
     Viewport& viewport;
     sf::RenderWindow& window;
     Graph& graph;

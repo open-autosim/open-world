@@ -13,8 +13,8 @@
 
 class MarkingEditor {
 public:
-    MarkingEditor(sf::RenderWindow& window, World& world, Viewport& viewport)
-        : window(window), world(world), viewport(viewport), mouseEnabled(false) {}
+    MarkingEditor(sf::RenderWindow& window, World& world, Viewport& viewport, std::vector<Segment>& targetSegments)
+        : window(window), world(world), viewport(viewport), mouseEnabled(false), targetSegments(targetSegments) {}
 
 
     void handleEvent(const sf::Event& event) {
@@ -44,6 +44,8 @@ public:
         if (intent) {
             intent->draw(window);
         }
+
+
     }
 
 
@@ -56,13 +58,23 @@ protected:
                 world.addMarking(intent);
                 intent = nullptr;
             }
+        } else if (event.mouseButton.button == sf::Mouse::Right) {
+            auto& markings = world.getMarkings(); // Reference to the markings vector
+            for (auto it = markings.begin(); it != markings.end(); /* no increment here */) {
+                if ((*it)->getPolygon().containsPoint(*mouse)) {
+                    it = markings.erase(it); // Erase returns the next valid iterator
+                } else {
+                    ++it; // Only increment if you didn't erase
+                }
+            }
         }
     }
 
     void handleMouseMove(const sf::Event& event) {
+
         Point mousePos = viewport.getMouse(event, true);
         mouse = std::make_shared<Point>(mousePos.x, mousePos.y);
-        std::shared_ptr<Segment> segIntent = Segment::getNearestSegment(mousePos, world.getLaneGuides(), 10 * viewport.getZoom());
+        std::shared_ptr<Segment> segIntent = Segment::getNearestSegment(mousePos, targetSegments, 10 * viewport.getZoom());
 
         if (segIntent) {
             Utils::IntersectionResult proj = segIntent->projectPoint(mousePos);
@@ -83,6 +95,8 @@ protected:
     Viewport& viewport;
     std::shared_ptr<Point> mouse;
     std::shared_ptr<Segment> segIntent;
+    std::vector<Segment>& targetSegments;
+
     std::shared_ptr<Marking> intent;
     bool mouseEnabled;
 };
