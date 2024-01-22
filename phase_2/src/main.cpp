@@ -43,6 +43,7 @@ int main() {
     } else {
         viewport.setZoom(world.zoom);
         // viewport.setOffset(world.offset);
+        std::cout << "Loaded world from file." << std::endl;
     }
     
     // World world(graph);
